@@ -15,6 +15,9 @@ public:
     explicit TorrifyWindow(QWidget *parent = 0);
     ~TorrifyWindow();
     
+protected slots:
+    void addTorInstance();
+
 private:
     Ui::TorrifyWindow *ui;
 };
