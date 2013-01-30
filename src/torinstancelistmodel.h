@@ -32,6 +32,8 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
     void AddTorInstance();
+    QString GetPath(uint i);
+    void SetPath(uint i, QString path);
 };
 
 #endif // TORINSTANCELISTMODEL_H

@@ -25,7 +25,10 @@ void TorInstanceListModel::LoadSettings()
     QString group;
     foreach (group, groups)
     {
-        torrcList_[group] = torrifySettings_.value("path").value<QString>();
+        torrifySettings_.beginGroup(group);
+        auto val = torrifySettings_.value("path").toString();
+        torrcList_[group] = val;
+        torrifySettings_.endGroup();
     }
 }
 
@@ -106,6 +109,18 @@ void TorInstanceListModel::AddTorInstance()
     emit dataChanged(QModelIndex(), QModelIndex());
 }
 
+QString TorInstanceListModel::GetPath(uint i)
+{
+    return data(createIndex(i, 1), Qt::DisplayRole).toString();
+}
+
+void TorInstanceListModel::SetPath(uint i, QString path)
+{
+    if (i < torrcList_.size())
+        torrcList_[(torrcList_.begin() + i).key()] = path;
+    emit dataChanged(QModelIndex(), QModelIndex());
+}
+
 QVariant TorInstanceListModel::data(const QModelIndex &index, int role) const
 {
     if (index != QModelIndex() && index.row() < torrcList_.size())
@@ -127,4 +142,3 @@ QVariant TorInstanceListModel::data(const QModelIndex &index, int role) const
     }
     return QVariant();
 }
-
