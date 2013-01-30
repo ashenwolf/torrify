@@ -1,9 +1,12 @@
 #include "torinstancelistmodel.h"
+#include "torinstancemanager.h"
+
 #include <QStringList>
+#include <QIcon>
 
 TorInstanceListModel::TorInstanceListModel():
     torrifySettings_(QSettings::IniFormat, QSettings::UserScope, "Skoll", "Torrify"),
-    counter_(0)
+    counter_(1)
 {
     LoadSettings();
 }
@@ -19,28 +22,39 @@ TorInstanceListModel::~TorInstanceListModel()
 
 void TorInstanceListModel::LoadSettings()
 {
-    torrcList_.clear();
-
-    auto groups = torrifySettings_.childGroups();
-    QString group;
-    foreach (group, groups)
+    foreach (QString group, torrifySettings_.childGroups())
     {
-        torrifySettings_.beginGroup(group);
-        auto val = torrifySettings_.value("path").toString();
-        torrcList_[group] = val;
-        torrifySettings_.endGroup();
+        torInstances_.append(new TorInstanceManager());
+        torInstances_.last()->Deserialize(torrifySettings_, group);
     }
 }
 
 void TorInstanceListModel::SaveSettings()
 {
-    QString group;
-    foreach (group, torrcList_.keys())
+    foreach (TorInstanceManager* torInstance, torInstances_)
     {
-        torrifySettings_.beginGroup(group);
-        torrifySettings_.setValue("path", torrcList_[group]);
-        torrifySettings_.endGroup();
+        torInstance->Serialize(torrifySettings_);
     }
+}
+
+bool TorInstanceListModel::isValidIndex(uint i) const
+{
+    return (i >= 0 && i < torInstances_.size());
+}
+
+TorInstanceManager *TorInstanceListModel::torInstance(uint i)
+{
+    if (isValidIndex(i))
+        return torInstances_.at(i);
+    return NULL;
+}
+
+QStringList TorInstanceListModel::getKeys() const
+{
+    QStringList result;
+    foreach (auto tor, torInstances_)
+        result.append(tor->name());
+    return result;
 }
 
 //
@@ -50,14 +64,12 @@ void TorInstanceListModel::SaveSettings()
 QModelIndex TorInstanceListModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (parent == QModelIndex())
-    {
         return createIndex(row, column);
-    }
 
     return QModelIndex();
 }
 
-QModelIndex TorInstanceListModel::parent(const QModelIndex &index) const
+QModelIndex TorInstanceListModel::parent(const QModelIndex &) const
 {
     return QModelIndex();
 }
@@ -66,14 +78,17 @@ QModelIndex TorInstanceListModel::parent(const QModelIndex &index) const
 int TorInstanceListModel::rowCount(const QModelIndex &parent) const
 {
     if (parent == QModelIndex())
-        return torrcList_.size();
+        return torInstances_.size();
 
     return 0;
 }
 
 int TorInstanceListModel::columnCount(const QModelIndex &parent) const
 {
-    return 2;
+    if (parent == QModelIndex())
+        return 2;
+
+    return 0;
 }
 
 QVariant TorInstanceListModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -98,42 +113,88 @@ void TorInstanceListModel::AddTorInstance()
     auto prefix = QString("Tor ");
 
     auto name = prefix + QString::number(counter_);
-    while (torrcList_.find(name) != torrcList_.end())
+    while (getKeys().contains(name, Qt::CaseInsensitive))
         name = prefix + QString::number(++counter_);
 
-    beginInsertRows(QModelIndex(), torrcList_.count(), torrcList_.count());
-    torrcList_[name] = "";
-    SaveSettings();
+    beginInsertRows(QModelIndex(), torInstances_.size(), torInstances_.size());
+    torInstances_.append(new TorInstanceManager());
+    torInstances_.last()->setName(name);
     endInsertRows();
 
     emit dataChanged(QModelIndex(), QModelIndex());
 }
 
+void TorInstanceListModel::DeleteTorInstance(uint i)
+{
+    if (isValidIndex(i))
+    {
+        beginRemoveRows(QModelIndex(), i, i);
+        auto tor = (torInstances_.begin() + i);
+        torInstances_.erase(tor);
+        torrifySettings_.remove((*tor)->name());
+        delete *tor;
+        endRemoveRows();
+    }
+}
+
 QString TorInstanceListModel::GetPath(uint i)
 {
-    return data(createIndex(i, 1), Qt::DisplayRole).toString();
+    if (isValidIndex(i))
+        return torInstances_[i]->path();
+    return QString();
+}
+
+QString TorInstanceListModel::GetName(uint i)
+{
+    if (isValidIndex(i))
+        return torInstances_[i]->name();
+    return QString();
 }
 
 void TorInstanceListModel::SetPath(uint i, QString path)
 {
-    if (i < torrcList_.size())
-        torrcList_[(torrcList_.begin() + i).key()] = path;
-    emit dataChanged(QModelIndex(), QModelIndex());
+    if (isValidIndex(i))
+    {
+        torInstances_[i]->setPath(path);
+        emit dataChanged(QModelIndex(), QModelIndex());
+    }
+}
+
+void TorInstanceListModel::RunTorInstance(uint i)
+{
+    if (isValidIndex(i))
+    {
+        torInstances_[i]->StartTor();
+        emit dataChanged(QModelIndex(), QModelIndex());
+    }
+}
+
+void TorInstanceListModel::StopTorInstance(uint i)
+{
+    if (isValidIndex(i))
+    {
+        torInstances_[i]->StopTor();
+        emit dataChanged(QModelIndex(), QModelIndex());
+    }
 }
 
 QVariant TorInstanceListModel::data(const QModelIndex &index, int role) const
 {
-    if (index != QModelIndex() && index.row() < torrcList_.size())
+    if (index != QModelIndex() && isValidIndex(index.row()))
     {
         switch(index.column())
         {
         case 0:
             if (role == Qt::DisplayRole)
-                return (torrcList_.begin() + index.row()).key();
+                return torInstances_[index.row()]->name();
+            else if (role == Qt::DecorationRole)
+                return QVariant::fromValue(QIcon(torInstances_[index.row()]->torIsRunning()
+                        ? QString(":/images/icons/run.png")
+                        : QString(":/images/icons/stop.png")));
             break;
         case 1:
             if (role == Qt::DisplayRole)
-                return (torrcList_.begin() + index.row()).value();
+                return torInstances_[index.row()]->path();
             break;
 
         default:

@@ -14,9 +14,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         torrifywindow.cpp \
-    src/torinstancelistmodel.cpp
+    src/torinstancelistmodel.cpp \
+    src/torinstancemanager.cpp
 
 HEADERS  += torrifywindow.h \
-    src/torinstancelistmodel.h
+    src/torinstancelistmodel.h \
+    src/torinstancemanager.h
 
 FORMS    += torrifywindow.ui
+
+RESOURCES += \
+    torrify.qrc

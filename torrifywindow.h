@@ -17,6 +17,10 @@ public:
     
 protected slots:
     void addTorInstance();
+    void deleteTorInstance();
+    void runTorInstance();
+    void stopTorInstance();
+
     void browseForTorrc();
     void changeSelectedTor(const QModelIndex & index);
     void torrcLocationChanged(const QString& path);

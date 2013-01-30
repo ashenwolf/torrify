@@ -175,26 +175,46 @@
    <property name="checkable">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="torrify.qrc">
+     <normaloff>:/images/icons/plus.png</normaloff>:/images/icons/plus.png</iconset>
+   </property>
    <property name="text">
     <string>Add Tor instance</string>
    </property>
   </action>
   <action name="actionDelete_Tor_instance">
+   <property name="icon">
+    <iconset resource="torrify.qrc">
+     <normaloff>:/images/icons/remove.png</normaloff>:/images/icons/remove.png</iconset>
+   </property>
    <property name="text">
     <string>Delete Tor instance</string>
    </property>
   </action>
   <action name="actionRun_Tor_instance">
+   <property name="icon">
+    <iconset resource="torrify.qrc">
+     <normaloff>:/images/icons/run.png</normaloff>:/images/icons/run.png</iconset>
+   </property>
    <property name="text">
     <string>Run Tor instance</string>
    </property>
   </action>
   <action name="actionStop_Tor_instance">
+   <property name="icon">
+    <iconset resource="torrify.qrc">
+     <normaloff>:/images/icons/stop.png</normaloff>:/images/icons/stop.png</iconset>
+   </property>
    <property name="text">
     <string>Stop Tor instance</string>
    </property>
   </action>
   <action name="actionChange_identity">
+   <property name="icon">
+    <iconset resource="torrify.qrc">
+     <normaloff>:/images/icons/refresh.png</normaloff>:/images/icons/refresh.png</iconset>
+   </property>
    <property name="text">
     <string>Change identity</string>
    </property>
@@ -216,7 +236,9 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="torrify.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionExit</sender>
@@ -231,6 +253,22 @@
     <hint type="destinationlabel">
      <x>324</x>
      <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>browseButton</sender>
+   <signal>clicked()</signal>
+   <receiver>actionBrowseForTorrc</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>702</x>
+     <y>107</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>

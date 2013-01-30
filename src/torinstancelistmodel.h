@@ -4,7 +4,9 @@
 #include <QAbstractItemModel>
 
 #include <QSettings>
-#include <QMap>
+#include <QList>
+
+class TorInstanceManager;
 
 class TorInstanceListModel : public QAbstractItemModel
 {
@@ -12,11 +14,14 @@ class TorInstanceListModel : public QAbstractItemModel
 private:
     uint counter_;
     QSettings torrifySettings_;
-    QMap<QString, QString>  torrcList_;
+    QList<TorInstanceManager*>  torInstances_;
 
 private:
     void LoadSettings();
     void SaveSettings();
+    bool isValidIndex(uint i) const;
+    TorInstanceManager* torInstance(uint i);
+    QStringList getKeys() const;
 
 public:
     TorInstanceListModel();
@@ -32,8 +37,13 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
     void AddTorInstance();
+    void DeleteTorInstance(uint i);
     QString GetPath(uint i);
+    QString GetName(uint i);
     void SetPath(uint i, QString path);
+
+    void RunTorInstance(uint i);
+    void StopTorInstance(uint i);
 };
 
 #endif // TORINSTANCELISTMODEL_H
