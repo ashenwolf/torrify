@@ -24,6 +24,7 @@ protected slots:
     void browseForTorrc();
     void changeSelectedTor(const QModelIndex & index);
     void torrcLocationChanged(const QString& path);
+    void torrcPortChanged(const QString &port);
 
 private:
     Ui::TorrifyWindow *ui;

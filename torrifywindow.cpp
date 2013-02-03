@@ -21,6 +21,10 @@ TorrifyWindow::TorrifyWindow(QWidget *parent) :
 
     connect(ui->treeView, SIGNAL(activated(QModelIndex)), SLOT(changeSelectedTor(QModelIndex)));
     connect(ui->torrcPath, SIGNAL(textChanged(QString)), SLOT(torrcLocationChanged(QString)));
+    connect(ui->portEdit, SIGNAL(textChanged(QString)), SLOT(torrcPortChanged(QString)));
+
+
+    ui->googleMaps->setPixmap(QPixmap("http://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Ccolor:red%7Clabel:C%7C40.718217,-73.998284&sensor=false"));
 }
 
 TorrifyWindow::~TorrifyWindow()
@@ -71,6 +75,9 @@ void TorrifyWindow::changeSelectedTor(const QModelIndex &index)
         auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
         ui->settingsFrame->setEnabled(true);
         ui->torrcPath->setText(model->GetPath(index.row()));
+        ui->portEdit->setText(model->GetPort(index.row()));
+
+        ui->valueIP->setText(model->GetIP(index.row()));
     }
     else
     {
@@ -84,4 +91,11 @@ void TorrifyWindow::torrcLocationChanged(const QString &path)
     auto torrcPath = QFileInfo(path);
     if (torrcPath.exists())
         model->SetPath(ui->treeView->currentIndex().row(), path);
+}
+
+void TorrifyWindow::torrcPortChanged(const QString &port)
+{
+    auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
+    if (port.toInt() > 0)
+        model->SetPort(ui->treeView->currentIndex().row(), port);
 }

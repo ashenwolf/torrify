@@ -38,12 +38,16 @@ public:
 
     void AddTorInstance();
     void DeleteTorInstance(uint i);
-    QString GetPath(uint i);
     QString GetName(uint i);
+    QString GetPath(uint i);
+    QString GetPort(uint i);
+    QString GetIP(uint i);
     void SetPath(uint i, QString path);
+    void SetPort(uint i, QString port);
 
     void RunTorInstance(uint i);
     void StopTorInstance(uint i);
+    void TestConnection(uint i);
 };
 
 #endif // TORINSTANCELISTMODEL_H

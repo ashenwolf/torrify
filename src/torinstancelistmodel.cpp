@@ -26,6 +26,7 @@ void TorInstanceListModel::LoadSettings()
     {
         torInstances_.append(new TorInstanceManager());
         torInstances_.last()->Deserialize(torrifySettings_, group);
+        torInstances_.last()->GetLocation();
     }
 }
 
@@ -119,6 +120,7 @@ void TorInstanceListModel::AddTorInstance()
     beginInsertRows(QModelIndex(), torInstances_.size(), torInstances_.size());
     torInstances_.append(new TorInstanceManager());
     torInstances_.last()->setName(name);
+    //connect(torInstances_.last(), SIGNAL(onLocationDetected(QString,QString,QString)), SLOT(LocationDetected(QString,QString,QString)));
     endInsertRows();
 
     emit dataChanged(QModelIndex(), QModelIndex());
@@ -137,6 +139,13 @@ void TorInstanceListModel::DeleteTorInstance(uint i)
     }
 }
 
+QString TorInstanceListModel::GetName(uint i)
+{
+    if (isValidIndex(i))
+        return torInstances_[i]->name();
+    return QString();
+}
+
 QString TorInstanceListModel::GetPath(uint i)
 {
     if (isValidIndex(i))
@@ -144,10 +153,17 @@ QString TorInstanceListModel::GetPath(uint i)
     return QString();
 }
 
-QString TorInstanceListModel::GetName(uint i)
+QString TorInstanceListModel::GetPort(uint i)
 {
     if (isValidIndex(i))
-        return torInstances_[i]->name();
+        return torInstances_[i]->port();
+    return QString();
+}
+
+QString TorInstanceListModel::GetIP(uint i)
+{
+    if (isValidIndex(i))
+        return torInstances_[i]->torEndpointIP();
     return QString();
 }
 
@@ -157,6 +173,23 @@ void TorInstanceListModel::SetPath(uint i, QString path)
     {
         torInstances_[i]->setPath(path);
         emit dataChanged(QModelIndex(), QModelIndex());
+    }
+}
+
+void TorInstanceListModel::SetPort(uint i, QString port)
+{
+    if (isValidIndex(i))
+    {
+        torInstances_[i]->setPort(port);
+        emit dataChanged(QModelIndex(), QModelIndex());
+    }
+}
+
+void TorInstanceListModel::TestConnection(uint i)
+{
+    if (isValidIndex(i))
+    {
+        torInstances_[i]->GetLocation();
     }
 }
 

@@ -23,6 +23,8 @@ public:
     void setName(const QString&);
     QString path();
     void setPath(const QString&);
+    QString port();
+    void setPort(const QString&);
 
     // Tor state properties
     bool torIsRunning();
@@ -38,6 +40,12 @@ public:
 
     // Casts
     operator QString();
+
+public slots:
+    void GetLocation();
+
+signals:
+    void onLocationDetected(const QString& ip, const QString& country, const QString& geo);
 };
 
 #endif // TORINSTANCEMANAGER_H
