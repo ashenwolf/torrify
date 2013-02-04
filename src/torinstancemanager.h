@@ -25,6 +25,7 @@ public:
     void setPath(const QString&);
     QString port();
     void setPort(const QString&);
+    QPixmap &googleMap();
 
     // Tor state properties
     bool torIsRunning();
@@ -37,10 +38,10 @@ public:
     // Tor actions
     void StartTor();
     void StopTor();
+    void newIdentity();
 
     // Casts
-    operator QString();
-
+    operator QString();    
 public slots:
     void GetLocation();
 

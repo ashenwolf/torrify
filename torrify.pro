@@ -15,11 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         torrifywindow.cpp \
     src/torinstancelistmodel.cpp \
-    src/torinstancemanager.cpp
+    src/torinstancemanager.cpp \
+    src/torcontrol.cpp \
+    src/torlauncher.cpp
 
 HEADERS  += torrifywindow.h \
     src/torinstancelistmodel.h \
-    src/torinstancemanager.h
+    src/torinstancemanager.h \
+    src/torcontrol.h \
+    src/torlauncher.h \
+    src/TorInterfaces.h
 
 FORMS    += torrifywindow.ui
 

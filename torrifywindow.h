@@ -2,6 +2,8 @@
 #define TORRIFYWINDOW_H
 
 #include <QMainWindow>
+#include <QItemSelection>
+#include <QtNetwork>
 
 namespace Ui {
 class TorrifyWindow;
@@ -22,9 +24,13 @@ protected slots:
     void stopTorInstance();
 
     void browseForTorrc();
-    void changeSelectedTor(const QModelIndex & index);
+    void changeSelectedTor(const QItemSelection &, const QItemSelection &);
     void torrcLocationChanged(const QString& path);
     void torrcPortChanged(const QString &port);
+    void refreshLocationInfo();
+    void changeTorIdentity();
+
+    void updateUI();
 
 private:
     Ui::TorrifyWindow *ui;

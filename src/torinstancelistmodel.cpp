@@ -160,11 +160,31 @@ QString TorInstanceListModel::GetPort(uint i)
     return QString();
 }
 
-QString TorInstanceListModel::GetIP(uint i)
+QString TorInstanceListModel::GetEndpointIP(uint i)
 {
     if (isValidIndex(i))
         return torInstances_[i]->torEndpointIP();
     return QString();
+}
+
+QString TorInstanceListModel::GetEndpointCountry(uint i)
+{
+    if (isValidIndex(i))
+        return torInstances_[i]->torEndpointCountry();
+    return QString();
+}
+
+QString TorInstanceListModel::GetEndpointGeo(uint i)
+{
+    if (isValidIndex(i))
+        return torInstances_[i]->torEndpointLocation();
+    return QString();
+}
+
+QPixmap &TorInstanceListModel::GetMap(uint i)
+{
+    if (isValidIndex(i))
+        return torInstances_[i]->googleMap();
 }
 
 void TorInstanceListModel::SetPath(uint i, QString path)
@@ -209,6 +229,19 @@ void TorInstanceListModel::StopTorInstance(uint i)
         torInstances_[i]->StopTor();
         emit dataChanged(QModelIndex(), QModelIndex());
     }
+}
+
+bool TorInstanceListModel::TorIsRunning(uint i)
+{
+    if (isValidIndex(i))
+        return torInstances_[i]->torIsRunning();
+    return false;
+}
+
+void TorInstanceListModel::changeTorIdentity(uint i)
+{
+    if (isValidIndex(i))
+        torInstances_[i]->newIdentity();
 }
 
 QVariant TorInstanceListModel::data(const QModelIndex &index, int role) const

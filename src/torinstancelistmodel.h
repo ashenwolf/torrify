@@ -41,13 +41,20 @@ public:
     QString GetName(uint i);
     QString GetPath(uint i);
     QString GetPort(uint i);
-    QString GetIP(uint i);
+
+    QString GetEndpointIP(uint i);
+    QString GetEndpointCountry(uint i);
+    QString GetEndpointGeo(uint i);
+    QPixmap& GetMap(uint i);
+
     void SetPath(uint i, QString path);
     void SetPort(uint i, QString port);
 
     void RunTorInstance(uint i);
     void StopTorInstance(uint i);
     void TestConnection(uint i);
+    bool TorIsRunning(uint i);
+    void changeTorIdentity(uint i);
 };
 
 #endif // TORINSTANCELISTMODEL_H
