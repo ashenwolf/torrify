@@ -96,7 +96,8 @@ public:
 
     // Tor actions
     void StartTor() { process_.start("tor.exe -f " + path()); }
-    void StopTor() { process_.kill(); }
+//    void StopTor() { process_.kill(); }
+    void StopTor() { tor_.shutdown(); process_.kill(); }
 
     void newIdentity() { tor_.updateIdentity(); }
 

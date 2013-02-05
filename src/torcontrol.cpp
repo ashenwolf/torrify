@@ -24,6 +24,7 @@ public slots:
     void authenticate();
     void readData();
     void updateIdentity();
+    void shutdown();
 
 public:
     TorControlImpl()
@@ -54,6 +55,11 @@ void TorControlImpl::updateIdentity()
     emit newIdentity();
 }
 
+void TorControlImpl::shutdown()
+{
+    sendCommand("signal shutdown\n");
+}
+
 void TorControlImpl::readData()
 {
     QDataStream in(&sock_);
@@ -80,4 +86,6 @@ TorControl::TorControl() {
 void TorControl::connectToTor(const QString& tor) { return impl_->connectToTor(tor); }
 bool TorControl::isConnected() { return impl_->isConnected(); }
 void TorControl::updateIdentity() { impl_->updateIdentity(); }
+void TorControl::shutdown() { impl_->shutdown(); }
+
 void TorControl::onNewIdentity() { emit newIdentity(); }

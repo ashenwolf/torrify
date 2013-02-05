@@ -16,8 +16,7 @@ SOURCES += main.cpp\
         torrifywindow.cpp \
     src/torinstancelistmodel.cpp \
     src/torinstancemanager.cpp \
-    src/torcontrol.cpp \
-    src/torlauncher.cpp
+    src/torcontrol.cpp
 
 HEADERS  += torrifywindow.h \
     src/torinstancelistmodel.h \

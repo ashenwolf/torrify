@@ -18,6 +18,7 @@ public:
     void connectToTor(const QString &tor);
     bool isConnected();
     void updateIdentity();
+    void shutdown();
 
 private slots:
     void onNewIdentity();
