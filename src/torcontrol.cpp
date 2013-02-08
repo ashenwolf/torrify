@@ -8,7 +8,8 @@ class TorControlImpl: public QObject
     Q_OBJECT
 
 private:
-    QTcpSocket sock_;
+    QStringList host_;
+    QTcpSocket  sock_;
     quint16 blockSize;
 
 private:
@@ -27,16 +28,18 @@ public slots:
     void shutdown();
 
 public:
-    TorControlImpl()
+    TorControlImpl(const QString& address)
     {
+        host_ = tor.split(":");
+
         connect(&sock_, SIGNAL(connected()), SLOT(authenticate()));
+        connect(&sock_, SIGNAL(disconnected()), SLOT(authenticate()));
         connect(&sock_, SIGNAL(readyRead()), SLOT(readData()));
     }
 
-    void connectToTor(const QString& tor)
+    void connectToTor()
     {
-        auto host = tor.split(":");
-        sock_.connectToHost(host[0], host[1].toInt());
+        sock_.connectToHost(host_[0], host_[1].toInt());
     }
 
     bool isConnected() { return sock_.state() == QAbstractSocket::ConnectedState; }
@@ -76,16 +79,17 @@ void TorControlImpl::readData()
         return;
 }
 
-////
+/////////
 
-TorControl::TorControl() {
-    impl_ = new TorControlImpl();
+TorControl::TorControl(const QString& address):
+    impl_(new TorControlImpl(address))
+{
     connect(impl_, SIGNAL(newIdentity()), SLOT(onNewIdentity()));
 }
 
-void TorControl::connectToTor(const QString& tor) { return impl_->connectToTor(tor); }
-bool TorControl::isConnected() { return impl_->isConnected(); }
+void TorControl::connectToTor()   { return impl_->connectToTor(); }
+bool TorControl::isConnected()    { return impl_->isConnected(); }
 void TorControl::updateIdentity() { impl_->updateIdentity(); }
-void TorControl::shutdown() { impl_->shutdown(); }
+void TorControl::shutdown()       { impl_->shutdown(); }
 
-void TorControl::onNewIdentity() { emit newIdentity(); }
+void TorControl::onNewIdentity()  { emit newIdentity(); }

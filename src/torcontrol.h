@@ -13,9 +13,9 @@ private:
     TorControlImpl* impl_;
 
 public:
-    TorControl();
+    TorControl(const QString &address);
 
-    void connectToTor(const QString &tor);
+    void connectToTor();
     bool isConnected();
     void updateIdentity();
     void shutdown();
