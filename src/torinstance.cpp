@@ -1,6 +1,7 @@
 #include "torinstance.h"
 #include "torsettings.h"
 #include "torcontrol.h"
+#include "torlocationfinder.h"
 
 #include <QProcess>
 #include <QtNetwork>
@@ -11,25 +12,25 @@ class TorInstanceImpl: public QObject
     Q_OBJECT
 
 private:
-    const TorSettings*    settings_;
-    TorControl      control_;
-    QProcess        launcher_;
-    QNetworkAccessManager net_;
+    const TorSettings*  settings_;
+    TorControl          control_;
+    TorLocationFinder   locationFinder_;
+    QProcess            launcher_;
 
-    QString         ip_;
-    QString         country_;
-    QString         location_;
-    QPixmap         map_;
+    QString     ip_;
+    QString     country_;
+    QString     location_;
+    QPixmap     map_;
 
 public:
     TorInstanceImpl(const TorSettings* settings):
       settings_(settings),
+      locationFinder_(settings_),
       control_("localhost:" + settings_->attr("ControlPort"))
     {
-//        connect(&net_, SIGNAL(finished(QNetworkReply*)), SLOT(onReply(QNetworkReply*)));
-//        connect(&tor_, SIGNAL(newIdentity()), SLOT(onNewIdentity()));
         connect(&launcher_, SIGNAL(started()), SLOT(onStarted()));
         connect(&control_, SIGNAL(connected()), SLOT(onConnected()));
+        connect(&control_, SIGNAL(newIdentity()), SLOT(onNewIdentity()));
 
         control_.connectToTor();
     }
@@ -50,42 +51,9 @@ public:
     void updateIdentity()   { if (isRunning()) control_.updateIdentity(); }
     void checkIdentity()
     {
-/*        QNetworkProxy proxy;
-        proxy.setType(QNetworkProxy::Socks5Proxy);
-        proxy.setHostName("127.0.0.1");
-        proxy.setPort(port_.toInt());
-
-        net_.setProxy(proxy);
-        //net_.get(QNetworkRequest(QUrl("http://freegeoip.net/xml/")));
-        net_.get(QNetworkRequest(QUrl("http://ua.smart-ip.net/geoip-xml")));*/
+        locationFinder_.checkLocation();
     }
-/*
-    void onReply(QNetworkReply *reply)
-    {
-        auto error = reply->error();
 
-        if (error == QNetworkReply::NoError)
-        {
-            if (reply->url().host() == QString("maps.googleapis.com"))
-            {
-                const QByteArray data(reply->readAll());
-                googleMap_.loadFromData(data);
-            }
-            else
-            {
-                QDomDocument doc("mydocument");
-                QString s(reply->readAll());
-                doc.setContent(s);
-                endpointIP_ = doc.elementsByTagName("host").at(0).toElement().text();
-                endpointCountry_ = doc.elementsByTagName("countryCode").at(0).toElement().text();
-                endpointGeo_ = doc.elementsByTagName("latitude").at(0).toElement().text() +  "," +
-                               doc.elementsByTagName("longitude").at(0).toElement().text();
-
-                net_.get(QNetworkRequest(QUrl("http://maps.googleapis.com/maps/api/staticmap?center=" + endpointGeo_ + "&zoom=3&size=300x300&sensor=false&markers=color:blue|label:E|" + endpointGeo_)));
-            }
-        }
-    }
-*/
     // identity info
     QString ip()        { return ip_; }
     QString country()   { return country_; }
@@ -95,6 +63,8 @@ public:
 private slots:
     void onStarted();
     void onConnected();
+    void onNewIdentity();
+    void onLocationFound(QString&, QString&, QString&, QPixmap&);
 };
 
 #include "torinstance.moc"
@@ -107,6 +77,19 @@ void TorInstanceImpl::onStarted()
 void TorInstanceImpl::onConnected()
 {
     checkIdentity();
+}
+
+void TorInstanceImpl::onNewIdentity()
+{
+    checkIdentity();
+}
+
+void TorInstanceImpl::onLocationFound(QString &ip, QString &country, QString &geo, QPixmap &map)
+{
+    ip_ = ip;
+    country_ = country;
+    location_ = geo;
+    map_ = map;
 }
 
 //////////////

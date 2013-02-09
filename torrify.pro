@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     src/torinstancemanager.cpp \
     src/torcontrol.cpp \
     src/torinstance.cpp \
-    src/torsettings.cpp
+    src/torsettings.cpp \
+    src/torlocationfinder.cpp
 
 HEADERS  += torrifywindow.h \
     src/torinstancelistmodel.h \
@@ -27,7 +28,8 @@ HEADERS  += torrifywindow.h \
     src/torlauncher.h \
     src/TorInterfaces.h \
     src/torinstance.h \
-    src/torsettings.h
+    src/torsettings.h \
+    src/torlocationfinder.h
 
 FORMS    += torrifywindow.ui
 

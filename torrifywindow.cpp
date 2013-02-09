@@ -135,6 +135,8 @@ void TorrifyWindow::updateUI()
         ui->googleMaps->setPixmap(QPixmap());
     }
 
+    ui->treeView->dataChanged(QModelIndex(), QModelIndex());
+
     ui->actionDelete_Tor_instance->setEnabled(isSelected);
     ui->actionRun_Tor_instance->setEnabled(!isRunning && isSelected);
     ui->actionStop_Tor_instance->setEnabled(isRunning && isSelected);

@@ -19,7 +19,7 @@ public:
     void load();
 //    void save();
 
-    QString attr(const QString& name) const;
+    QString attr(const QString& name, const QString& def = QString()) const;
 //    void setAttr(const QString& name, const QString& value);
 };
 

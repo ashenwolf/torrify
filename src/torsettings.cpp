@@ -47,11 +47,11 @@ public:
     }
 
 
-    QString attr(const QString& name)
+    QString attr(const QString& name, const QString& def)
     {
         if (rc_.find(name) != rc_.end())
             return rc_[name];
-        return QString();
+        return def;
     }
 
     //void save();
@@ -69,5 +69,5 @@ QString TorSettings::torrc() const    { return impl_->torrc(); }
 void TorSettings::load()        { impl_->load(); }
 //void TorSettings::save()        { impl_->save(); }
 
-QString TorSettings::attr(const QString& name) const                      { return impl_->attr(name); }
-//void TorSettings::setAttr(const QString& name, const QString& value)    { impl_->setAttr(); }
+QString TorSettings::attr(const QString& name, const QString& def) const    { return impl_->attr(name, def); }
+//void TorSettings::setAttr(const QString& name, const QString& value)      { impl_->setAttr(); }
