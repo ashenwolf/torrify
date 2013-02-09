@@ -1,95 +1,94 @@
 #include "torrifywindow.h"
 #include "ui_torrifywindow.h"
-#include "src/torinstancelistmodel.h"
+#include "src/torinstancemanager.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QProcess>
 #include <QTimer>
 
+TorInstanceManager manager;
+QTimer             timer;
+
 TorrifyWindow::TorrifyWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::TorrifyWindow)
 {
     ui->setupUi(this);
-    ui->treeView->setModel(new TorInstanceListModel());
+    ui->treeView->setModel(manager.getModel());
 
     connect(ui->actionAdd_Tor_instance, SIGNAL(triggered()), SLOT(addTorInstance()));
     connect(ui->actionDelete_Tor_instance, SIGNAL(triggered()), SLOT(deleteTorInstance()));
     connect(ui->actionRun_Tor_instance, SIGNAL(triggered()), SLOT(runTorInstance()));
     connect(ui->actionStop_Tor_instance, SIGNAL(triggered()), SLOT(stopTorInstance()));
     connect(ui->actionChange_identity, SIGNAL(triggered()), SLOT(changeTorIdentity()));
-    connect(ui->actionBrowseForTorrc, SIGNAL(triggered()), SLOT(browseForTorrc()));
-    connect(ui->actionRefresh, SIGNAL(triggered()), SLOT(refreshLocationInfo()));
 
     connect(ui->treeView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(changeSelectedTor(QItemSelection,QItemSelection)));
-    connect(ui->torrcPath, SIGNAL(textChanged(QString)), SLOT(torrcLocationChanged(QString)));
-    connect(ui->portEdit, SIGNAL(textChanged(QString)), SLOT(torrcPortChanged(QString)));
 
-    QTimer::singleShot(500, this, SLOT(updateUI()));
+    connect(&timer, SIGNAL(timeout()), SLOT(updateUI()));
+
+    manager.load();
+    timer.setInterval(1000);
+    timer.start(1000);
 }
 
 TorrifyWindow::~TorrifyWindow()
 {
-    auto model = ui->treeView->model();
-    delete model;
+    timer.stop();
     delete ui;
 }
 
 void TorrifyWindow::addTorInstance()
 {
-    auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
-    model->AddTorInstance();
-    updateUI();
-}
-
-void TorrifyWindow::deleteTorInstance()
-{
-    auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
-    model->DeleteTorInstance(ui->treeView->currentIndex().row());
-    updateUI();
-}
-
-void TorrifyWindow::runTorInstance()
-{
-    auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
-    model->RunTorInstance(ui->treeView->currentIndex().row());
-    updateUI();
-}
-
-void TorrifyWindow::stopTorInstance()
-{
-    auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
-    model->StopTorInstance(ui->treeView->currentIndex().row());
-    updateUI();
-}
-
-void TorrifyWindow::browseForTorrc()
-{
     auto torrc = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
                                                     tr("Files (*.*)"));
 
-    if (!torrc.isEmpty())
-        ui->torrcPath->setText(torrc);
+    if (!torrc.isNull())
+    {
+        QFileInfo info(torrc);
+        manager.add(info.fileName(), torrc);
+        updateUI();
+    }
 }
 
-void TorrifyWindow::refreshLocationInfo()
-{
-    auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
-    model->TestConnection(ui->treeView->currentIndex().row());
-}
-
-void TorrifyWindow::changeSelectedTor(const QItemSelection&, const QItemSelection&)
+void TorrifyWindow::deleteTorInstance()
 {
     auto index = ui->treeView->currentIndex();
     if (index != QModelIndex() && index.parent() == QModelIndex())
     {
-        auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
-        ui->torrcPath->setText(model->GetPath(index.row()));
-        ui->portEdit->setText(model->GetPort(index.row()));
+        auto tor = reinterpret_cast<TorInstance*>(ui->treeView->currentIndex().internalPointer());
+        if (tor)
+        {
+            manager.remove(tor->settings()->name());
+            updateUI();
+        }
     }
-    updateUI();
+}
+
+void TorrifyWindow::runTorInstance()
+{
+    auto index = ui->treeView->currentIndex();
+    if (index != QModelIndex() && index.parent() == QModelIndex())
+    {
+        auto tor = reinterpret_cast<TorInstance*>(ui->treeView->currentIndex().internalPointer());
+        if (tor)
+            tor->start();
+        updateUI();
+    }
+}
+
+void TorrifyWindow::stopTorInstance()
+{
+    auto index = ui->treeView->currentIndex();
+    if (index != QModelIndex() && index.parent() == QModelIndex())
+    {
+        auto tor = reinterpret_cast<TorInstance*>(ui->treeView->currentIndex().internalPointer());
+        if (tor)
+            tor->stop();
+        updateUI();
+    }
+
 }
 
 void TorrifyWindow::changeTorIdentity()
@@ -97,24 +96,16 @@ void TorrifyWindow::changeTorIdentity()
     auto index = ui->treeView->currentIndex();
     if (index != QModelIndex() && index.parent() == QModelIndex())
     {
-        auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
-        model->changeTorIdentity(index.row());
+        auto tor = reinterpret_cast<TorInstance*>(ui->treeView->currentIndex().internalPointer());
+        if (tor)
+            tor->updateIdentity();
+        updateUI();
     }
 }
 
-void TorrifyWindow::torrcLocationChanged(const QString &path)
+void TorrifyWindow::changeSelectedTor(const QItemSelection&, const QItemSelection&)
 {
-    auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
-    auto torrcPath = QFileInfo(path);
-    if (torrcPath.exists())
-        model->SetPath(ui->treeView->currentIndex().row(), path);
-}
-
-void TorrifyWindow::torrcPortChanged(const QString &port)
-{
-    auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
-    if (port.toInt() > 0)
-        model->SetPort(ui->treeView->currentIndex().row(), port);
+    updateUI();
 }
 
 void TorrifyWindow::updateUI()
@@ -122,31 +113,31 @@ void TorrifyWindow::updateUI()
     bool isRunning = false;
     bool isSelected = false;
     auto index = ui->treeView->currentIndex();
-    auto model = dynamic_cast<TorInstanceListModel*>(ui->treeView->model());
     if (index != QModelIndex() && index.parent() == QModelIndex())
     {
-        static QString ip;
-        static QNetworkAccessManager manager;
+        auto tor = reinterpret_cast<TorInstance*>(ui->treeView->currentIndex().internalPointer());
+        if (tor)
+        {
+            isSelected = true;
+            isRunning = tor->isRunning();
 
-        uint i = ui->treeView->currentIndex().row();
-        isSelected = true;
-        isRunning = model->TorIsRunning(i);
-
-        ui->valueIP->setText(model->GetEndpointIP(i));
-        ui->valueCountry->setText(model->GetEndpointCountry(i));
-        ui->valueGeo->setText(model->GetEndpointGeo(i));
-
-        //if (ip != model->GetEndpointIP(i))
-            ui->googleMaps->setPixmap(model->GetMap(i));
-
-        ip = model->GetEndpointIP(i);
+            ui->valueIP->setText(tor->ip());
+            ui->valueCountry->setText(tor->country());
+            ui->valueGeo->setText(tor->location());
+            ui->googleMaps->setPixmap(tor->map());
+        }
+    }
+    else
+    {
+        ui->valueIP->setText("N/A");
+        ui->valueCountry->setText("N/A");
+        ui->valueGeo->setText("N/A");
+        ui->googleMaps->setPixmap(QPixmap());
     }
 
     ui->actionDelete_Tor_instance->setEnabled(isSelected);
-    ui->actionRun_Tor_instance->setEnabled(!isRunning);
-    ui->actionStop_Tor_instance->setEnabled(isRunning);
-    ui->actionChange_identity->setEnabled(isRunning);
+    ui->actionRun_Tor_instance->setEnabled(!isRunning && isSelected);
+    ui->actionStop_Tor_instance->setEnabled(isRunning && isSelected);
+    ui->actionChange_identity->setEnabled(isRunning && isSelected);
     ui->settingsFrame->setEnabled(isSelected);
-
-    QTimer::singleShot(500, this, SLOT(updateUI()));
 }

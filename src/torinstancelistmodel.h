@@ -1,30 +1,32 @@
 #ifndef TORINSTANCELISTMODEL_H
 #define TORINSTANCELISTMODEL_H
 
+#include "torinstance.h"
+
 #include <QAbstractItemModel>
 
 #include <QSettings>
 #include <QList>
 
-class TorInstanceManager;
+struct ITorInstanceManager
+{
+    virtual void         add(const QString& name, const QString& path) = 0;
+    virtual void         remove(const QString& name) = 0;
+    virtual int          count() = 0;
+    virtual TorInstance* at(int i) = 0;
+};
 
 class TorInstanceListModel : public QAbstractItemModel
 {
     Q_OBJECT
 private:
-    uint counter_;
-    QSettings torrifySettings_;
-    QList<TorInstanceManager*>  torInstances_;
+    ITorInstanceManager* manager_;
 
 private:
-    void LoadSettings();
-    void SaveSettings();
-    bool isValidIndex(uint i) const;
-    TorInstanceManager* torInstance(uint i);
-    QStringList getKeys() const;
+    bool isValidIndex(int i) const;
 
 public:
-    TorInstanceListModel();
+    TorInstanceListModel(ITorInstanceManager* manager);
     ~TorInstanceListModel();
 
     // model
@@ -36,25 +38,8 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-    void AddTorInstance();
-    void DeleteTorInstance(uint i);
-    QString GetName(uint i);
-    QString GetPath(uint i);
-    QString GetPort(uint i);
-
-    QString GetEndpointIP(uint i);
-    QString GetEndpointCountry(uint i);
-    QString GetEndpointGeo(uint i);
-    QPixmap& GetMap(uint i);
-
-    void SetPath(uint i, QString path);
-    void SetPort(uint i, QString port);
-
-    void RunTorInstance(uint i);
-    void StopTorInstance(uint i);
-    void TestConnection(uint i);
-    bool TorIsRunning(uint i);
-    void changeTorIdentity(uint i);
+    void add();
+    void remove(int i);
 };
 
 #endif // TORINSTANCELISTMODEL_H

@@ -13,13 +13,13 @@ private:
 public:
     TorSettings(const QString& name, const QString& torrc);
 
-    QString name();
-    QString torrc();
+    QString name() const;
+    QString torrc() const;
 
     void load();
 //    void save();
 
-    QString attr(const QString& name);
+    QString attr(const QString& name) const;
 //    void setAttr(const QString& name, const QString& value);
 };
 

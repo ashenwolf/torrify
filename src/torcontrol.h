@@ -21,9 +21,11 @@ public:
     void shutdown();
 
 private slots:
+    void onConnected();
     void onNewIdentity();
 
 signals:
+    void connected();
     void newIdentity();
 };
 

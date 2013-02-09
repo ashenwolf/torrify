@@ -19,6 +19,7 @@ private:
     }
 
 signals:
+    void connected();
     void newIdentity();
 
 public slots:
@@ -30,15 +31,17 @@ public slots:
 public:
     TorControlImpl(const QString& address)
     {
-        host_ = tor.split(":");
+        host_ = address.split(":");
 
         connect(&sock_, SIGNAL(connected()), SLOT(authenticate()));
-        connect(&sock_, SIGNAL(disconnected()), SLOT(authenticate()));
+        //connect(&sock_, SIGNAL(disconnected()), SLOT(authenticate()));
         connect(&sock_, SIGNAL(readyRead()), SLOT(readData()));
     }
 
     void connectToTor()
     {
+        if (isConnected())
+            sock_.disconnectFromHost();
         sock_.connectToHost(host_[0], host_[1].toInt());
     }
 
@@ -50,6 +53,7 @@ public:
 void TorControlImpl::authenticate()
 {
     sendCommand("authenticate \"\"\n");
+    emit connected();
 }
 
 void TorControlImpl::updateIdentity()
@@ -84,6 +88,7 @@ void TorControlImpl::readData()
 TorControl::TorControl(const QString& address):
     impl_(new TorControlImpl(address))
 {
+    connect(impl_, SIGNAL(connected()), SLOT(onConnected()));
     connect(impl_, SIGNAL(newIdentity()), SLOT(onNewIdentity()));
 }
 
@@ -93,3 +98,4 @@ void TorControl::updateIdentity() { impl_->updateIdentity(); }
 void TorControl::shutdown()       { impl_->shutdown(); }
 
 void TorControl::onNewIdentity()  { emit newIdentity(); }
+void TorControl::onConnected()    { emit connected(); }

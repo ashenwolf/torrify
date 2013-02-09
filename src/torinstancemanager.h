@@ -1,11 +1,11 @@
 #ifndef TORINSTANCEMANAGER_H
 #define TORINSTANCEMANAGER_H
 
-#include <QSettings>
+#include "torinstancelistmodel.h"
 
 class TorInstanceManagerImpl;
 
-class TorInstanceManager
+class TorInstanceManager: public ITorInstanceManager
 {
 private:
     TorInstanceManagerImpl* impl_;
@@ -14,39 +14,17 @@ public:
     TorInstanceManager();
     ~TorInstanceManager();
 
-    // Saving loading
-    void Serialize(QSettings &storage);
-    void Deserialize(QSettings &storage, const QString& group);
+    void load();
+    TorInstanceListModel* getModel();
+    void add(const QString& name, const QString& path);
+    void remove(const QString& name);
+    int  count();
+    TorInstance* at(int i);
 
-    // Properties
-    QString name();
-    void setName(const QString&);
-    QString path();
-    void setPath(const QString&);
-    QString port();
-    void setPort(const QString&);
-    QPixmap &googleMap();
-
-    // Tor state properties
-    bool torIsRunning();
-
-    // Tor endpoint properties
-    QString torEndpointIP();
-    QString torEndpointCountry();
-    QString torEndpointLocation();
-
-    // Tor actions
-    void StartTor();
-    void StopTor();
-    void newIdentity();
-
-    // Casts
-    operator QString();    
 public slots:
-    void GetLocation();
 
 signals:
-    void onLocationDetected(const QString& ip, const QString& country, const QString& geo);
+    void updateLocaltion();
 };
 
 #endif // TORINSTANCEMANAGER_H

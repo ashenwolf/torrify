@@ -12,13 +12,15 @@ private:
     QString name_;
     QString torrc_;
 
-    QMap    rc_;
+    QMap<QString, QString>    rc_;
 
 public:
     TorSettingsImpl(const QString& name, const QString& torrc):
         name_(name),
         torrc_(torrc)
-    {}
+    {
+        load();
+    }
 
     QString name()  { return name_; }
     QString torrc() { return torrc_; }
@@ -47,8 +49,8 @@ public:
 
     QString attr(const QString& name)
     {
-        if (rc_.find(name))
-            return rc[name];
+        if (rc_.find(name) != rc_.end())
+            return rc_[name];
         return QString();
     }
 
@@ -61,11 +63,11 @@ public:
 TorSettings::TorSettings(const QString& name, const QString& torrc):
     impl_(new TorSettingsImpl(name, torrc)) {}
 
-QString TorSettings::name()     { return impl_->name(); }
-QString TorSettings::torrc()    { return impl_->torrc(); }
+QString TorSettings::name() const     { return impl_->name(); }
+QString TorSettings::torrc() const    { return impl_->torrc(); }
 
 void TorSettings::load()        { impl_->load(); }
 //void TorSettings::save()        { impl_->save(); }
 
-QString TorSettings::attr(const QString& name)                          { return impl_->attr(); }
+QString TorSettings::attr(const QString& name) const                      { return impl_->attr(name); }
 //void TorSettings::setAttr(const QString& name, const QString& value)    { impl_->setAttr(); }

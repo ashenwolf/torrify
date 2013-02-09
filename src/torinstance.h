@@ -1,7 +1,9 @@
 #ifndef TORINSTANCE_H
 #define TORINSTANCE_H
 
+#include "torsettings.h"
 #include <QObject>
+#include <QPixmap>
 
 class TorInstanceImpl;
 
@@ -20,6 +22,9 @@ public:
     void start();
     void stop();
     bool isRunning();
+
+    // settings
+    const TorSettings* settings();
 
     // tor identity control
     void updateIdentity();
