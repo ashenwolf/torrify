@@ -1,7 +1,7 @@
 torrify
 =======
 
-A very simple tool to running multiple Tor instances (with separate configs).
+A very simple tool to run multiple Tor instances (with separate configs).
 
 The initial idea was to implement a tool that would allow me to use services
 that are unavailable to my country via some proxy IP. The best choice of the tool
