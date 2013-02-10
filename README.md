@@ -29,6 +29,7 @@ Install the application. Add several torrc files like the one below. Have fun.
 ##### Todo
 
 * add simple torrc file editor
+* hash password support
 * add tor logging visualization
 
 
