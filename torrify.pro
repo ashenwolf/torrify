@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     src/torcontrol.cpp \
     src/torinstance.cpp \
     src/torsettings.cpp \
-    src/torlocationfinder.cpp
+    src/torlocationfinder.cpp \
+    src/helpdialog.cpp
 
 HEADERS  += torrifywindow.h \
     src/torinstancelistmodel.h \
@@ -30,9 +31,11 @@ HEADERS  += torrifywindow.h \
     src/torinstance.h \
     src/torsettings.h \
     src/torlocationfinder.h \
-    version.h
+    version.h \
+    src/helpdialog.h
 
-FORMS    += torrifywindow.ui
+FORMS    += torrifywindow.ui \
+    src/helpdialog.ui
 
 RESOURCES += \
     torrify.qrc
@@ -40,4 +43,5 @@ RESOURCES += \
 RC_FILE = torrify.rc
 
 OTHER_FILES += \
-    torrify.rc
+    torrify.rc \
+    license.html

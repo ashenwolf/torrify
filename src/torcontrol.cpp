@@ -2,17 +2,17 @@
 
 #include <QTcpSocket>
 #include <QStringList>
+#include <QTimer>
 
 class TorControlImpl: public QObject
 {
     Q_OBJECT
 
 private:
-    const TorSettings* settings_;
-    QStringList host_;
-    QString     hash_;
-    QTcpSocket  sock_;
-    quint16 blockSize;
+    const TorSettings*  settings_;
+    QStringList         host_;
+    QTcpSocket          sock_;
+    quint16             blockSize;
 
 private:
     void sendCommand(const QString& command)
@@ -29,6 +29,7 @@ public slots:
     void readData();
     void updateIdentity();
     void shutdown();
+    void onTimer();
 
 public:
     TorControlImpl(const TorSettings* settings):
@@ -36,8 +37,6 @@ public:
     {
         auto address = "localhost:" + settings_->attr("ControlPort", "9051");
         host_ = address.split(":");
-
-        hash_ = settings_->attr("HashedControlPassword", "");
 
         connect(&sock_, SIGNAL(connected()), SLOT(authenticate()));
         connect(&sock_, SIGNAL(readyRead()), SLOT(readData()));
@@ -57,14 +56,14 @@ public:
 
 void TorControlImpl::authenticate()
 {
-    sendCommand("authenticate \""+ hash_ +"\"\n");
+    sendCommand("authenticate \"\"\n");
     emit connected();
 }
 
 void TorControlImpl::updateIdentity()
 {
     sendCommand("signal newnym\n");
-    emit newIdentity();
+    QTimer::singleShot(1000, this, SLOT(onTimer()));
 }
 
 void TorControlImpl::shutdown()
@@ -86,6 +85,11 @@ void TorControlImpl::readData()
 
     if (sock_.bytesAvailable() < blockSize)
         return;
+}
+
+void TorControlImpl::onTimer()
+{
+    emit newIdentity();
 }
 
 /////////

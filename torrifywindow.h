@@ -22,6 +22,7 @@ protected slots:
     void deleteTorInstance();
     void runTorInstance();
     void stopTorInstance();
+    void about();
 
     void changeSelectedTor(const QItemSelection &, const QItemSelection &);
     void changeTorIdentity();

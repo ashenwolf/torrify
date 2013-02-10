@@ -6,5 +6,10 @@
         <file>icons/remove.png</file>
         <file>icons/run.png</file>
         <file>icons/stop.png</file>
+        <file>torrify.ico</file>
+        <file>icons/torrify-full.png</file>
+    </qresource>
+    <qresource prefix="/license">
+        <file>license.html</file>
     </qresource>
 </RCC>

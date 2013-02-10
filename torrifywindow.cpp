@@ -1,5 +1,6 @@
 #include "torrifywindow.h"
 #include "ui_torrifywindow.h"
+#include "src/helpdialog.h"
 #include "src/torinstancemanager.h"
 
 #include <QFileDialog>
@@ -22,6 +23,7 @@ TorrifyWindow::TorrifyWindow(QWidget *parent) :
     connect(ui->actionRun_Tor_instance, SIGNAL(triggered()), SLOT(runTorInstance()));
     connect(ui->actionStop_Tor_instance, SIGNAL(triggered()), SLOT(stopTorInstance()));
     connect(ui->actionChange_identity, SIGNAL(triggered()), SLOT(changeTorIdentity()));
+    connect(ui->actionAbout, SIGNAL(triggered()), SLOT(about()));
 
     connect(ui->treeView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(changeSelectedTor(QItemSelection,QItemSelection)));
 
@@ -154,4 +156,10 @@ void TorrifyWindow::updateUI()
     ui->actionStop_Tor_instance->setEnabled(isRunning && isSelected);
     ui->actionChange_identity->setEnabled(isRunning && isSelected);
     ui->settingsFrame->setEnabled(isSelected);
+}
+
+void TorrifyWindow::about()
+{
+    HelpDialog help;
+    help.exec();
 }
