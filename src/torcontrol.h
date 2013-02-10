@@ -1,5 +1,6 @@
 #ifndef TORCONTROL_H
 #define TORCONTROL_H
+#include "torsettings.h"
 
 #include <QObject>
 
@@ -13,7 +14,7 @@ private:
     TorControlImpl* impl_;
 
 public:
-    TorControl(const QString &address);
+    TorControl(const TorSettings*);
 
     void connectToTor();
     bool isConnected();

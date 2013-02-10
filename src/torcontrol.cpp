@@ -8,7 +8,9 @@ class TorControlImpl: public QObject
     Q_OBJECT
 
 private:
+    const TorSettings* settings_;
     QStringList host_;
+    QString     hash_;
     QTcpSocket  sock_;
     quint16 blockSize;
 
@@ -29,12 +31,15 @@ public slots:
     void shutdown();
 
 public:
-    TorControlImpl(const QString& address)
+    TorControlImpl(const TorSettings* settings):
+        settings_(settings)
     {
+        auto address = "localhost:" + settings_->attr("ControlPort", "9051");
         host_ = address.split(":");
 
+        hash_ = settings_->attr("HashedControlPassword", "");
+
         connect(&sock_, SIGNAL(connected()), SLOT(authenticate()));
-        //connect(&sock_, SIGNAL(disconnected()), SLOT(authenticate()));
         connect(&sock_, SIGNAL(readyRead()), SLOT(readData()));
     }
 
@@ -52,7 +57,7 @@ public:
 
 void TorControlImpl::authenticate()
 {
-    sendCommand("authenticate \"\"\n");
+    sendCommand("authenticate \""+ hash_ +"\"\n");
     emit connected();
 }
 
@@ -85,8 +90,8 @@ void TorControlImpl::readData()
 
 /////////
 
-TorControl::TorControl(const QString& address):
-    impl_(new TorControlImpl(address))
+TorControl::TorControl(const TorSettings* settings):
+    impl_(new TorControlImpl(settings))
 {
     connect(impl_, SIGNAL(connected()), SLOT(onConnected()));
     connect(impl_, SIGNAL(newIdentity()), SLOT(onNewIdentity()));

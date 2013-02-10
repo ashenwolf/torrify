@@ -89,7 +89,7 @@
              <property name="lineWidth">
               <number>0</number>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="3,4">
+             <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="2,4">
               <property name="leftMargin">
                <number>0</number>
               </property>
@@ -187,6 +187,12 @@
               </item>
               <item>
                <widget class="QLabel" name="googleMaps">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::Panel</enum>
                 </property>

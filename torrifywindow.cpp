@@ -123,21 +123,27 @@ void TorrifyWindow::updateUI()
             isSelected = true;
             isRunning = tor->isRunning();
 
-            ui->valueIP->setText(tor->ip());
-            ui->valueCountry->setText(tor->country());
-            ui->valueGeo->setText(tor->location());
-            ui->googleMaps->setPixmap(tor->map());
-
+            if (isRunning)
+            {
+                ui->valueIP->setText(tor->ip());
+                ui->valueCountry->setText(tor->country());
+                ui->valueGeo->setText(tor->location());
+                ui->googleMaps->setPixmap(tor->map());
+            }
             ui->valuePort->setText(tor->port());
         }
     }
-    else
+
+    if (!isRunning)
     {
         ui->valueIP->setText("N/A");
         ui->valueCountry->setText("N/A");
         ui->valueGeo->setText("N/A");
         ui->googleMaps->setPixmap(QPixmap());
-
+        ui->googleMaps->setText("Location unknown");
+    }
+    if (!isSelected)
+    {
         ui->valuePort->setText("N/A");
     }
 

@@ -26,7 +26,7 @@ public:
     TorInstanceImpl(const TorSettings* settings):
       settings_(settings),
       locationFinder_(settings_),
-      control_("localhost:" + settings_->attr("ControlPort"))
+      control_(settings_)
     {
         connect(&launcher_, SIGNAL(started()), SLOT(onStarted()));
         connect(&control_, SIGNAL(connected()), SLOT(onConnected()));
