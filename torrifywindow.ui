@@ -117,7 +117,7 @@
                 <item row="0" column="1">
                  <widget class="QLabel" name="valueIP">
                   <property name="text">
-                   <string>127.0.0.1</string>
+                   <string>N/A</string>
                   </property>
                  </widget>
                 </item>
@@ -131,7 +131,7 @@
                 <item row="1" column="1">
                  <widget class="QLabel" name="valueCountry">
                   <property name="text">
-                   <string>Ukraine</string>
+                   <string>N/A</string>
                   </property>
                  </widget>
                 </item>
@@ -145,11 +145,32 @@
                 <item row="2" column="1">
                  <widget class="QLabel" name="valueGeo">
                   <property name="text">
-                   <string>10, 20</string>
+                   <string>N/A</string>
                   </property>
                  </widget>
                 </item>
                 <item row="3" column="0">
+                 <widget class="Line" name="line">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="labelPort">
+                  <property name="text">
+                   <string>Socks Port:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLabel" name="valuePort">
+                  <property name="text">
+                   <string>N/A</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
                  <spacer name="horizontalSpacer">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>

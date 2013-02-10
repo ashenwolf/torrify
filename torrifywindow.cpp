@@ -30,6 +30,8 @@ TorrifyWindow::TorrifyWindow(QWidget *parent) :
     manager.load();
     timer.setInterval(1000);
     timer.start(1000);
+
+    statusBar()->showMessage(tr("Ready"));
 }
 
 TorrifyWindow::~TorrifyWindow()
@@ -125,6 +127,8 @@ void TorrifyWindow::updateUI()
             ui->valueCountry->setText(tor->country());
             ui->valueGeo->setText(tor->location());
             ui->googleMaps->setPixmap(tor->map());
+
+            ui->valuePort->setText(tor->port());
         }
     }
     else
@@ -133,6 +137,8 @@ void TorrifyWindow::updateUI()
         ui->valueCountry->setText("N/A");
         ui->valueGeo->setText("N/A");
         ui->googleMaps->setPixmap(QPixmap());
+
+        ui->valuePort->setText("N/A");
     }
 
     ui->treeView->dataChanged(QModelIndex(), QModelIndex());

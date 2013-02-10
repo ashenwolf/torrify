@@ -29,9 +29,15 @@ HEADERS  += torrifywindow.h \
     src/TorInterfaces.h \
     src/torinstance.h \
     src/torsettings.h \
-    src/torlocationfinder.h
+    src/torlocationfinder.h \
+    version.h
 
 FORMS    += torrifywindow.ui
 
 RESOURCES += \
     torrify.qrc
+
+RC_FILE = torrify.rc
+
+OTHER_FILES += \
+    torrify.rc
