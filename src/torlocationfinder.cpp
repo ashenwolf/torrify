@@ -26,7 +26,7 @@ public:
 
     void checkLocation()
     {
-        auto socks = settings_->attr("SocksPort", "localhost:9050");
+        auto socks = settings_->attr("SocksPort", "9050");
         QString socksAddr = "localhost";
         QString socksPort;
 
@@ -38,6 +38,12 @@ public:
         }
         else
         {
+            auto host = settings_->attr("SocksListenAddress", "localhost");
+            if (host.contains(':'))
+                socksAddr = host.split(':')[0];
+            else
+                socksAddr = host;
+
             socksPort = socks;
         }
 

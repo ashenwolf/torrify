@@ -37,7 +37,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "D:\Skoll\software\torrify-installer\torrify.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Skoll\software\torrify-installer\*"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Skoll\software\torrify-tor-extra\*"; DestDir: "{userappdata}\Tor2"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\Skoll\software\torrify-tor-extra\*"; DestDir: "{userappdata}\Tor"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

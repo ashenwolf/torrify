@@ -41,8 +41,7 @@ public:
             QString line = in.readLine();
             if (rx.indexIn(line) != -1)
             {
-                auto str = rx.cap(2).simplified();
-                rc_[rx.cap(1)] = str;
+                rc_[rx.cap(1).toLower()] = rx.cap(2).simplified();
             }
         }
 
@@ -52,7 +51,7 @@ public:
 
     QString attr(const QString& name, const QString& def)
     {
-        if (rc_.find(name) != rc_.end())
+        if (rc_.find(name.toLower()) != rc_.end())
             return rc_[name];
         return def;
     }
