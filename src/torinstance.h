@@ -35,6 +35,7 @@ public:
     QString country();
     QString location();
     QPixmap map();
+    QString port();
 };
 
 #endif // TORINSTANCE_H

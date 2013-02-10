@@ -34,13 +34,16 @@ public:
         }
 
         QTextStream in(&file);
-        QRegExp rx("(?!#)(\\w+)\\s+(.+)");
+        QRegExp rx("^\\s*(?!#)(\\w+)\\s+([^#]+)#?.*");
 
         while(!in.atEnd())
         {
             QString line = in.readLine();
             if (rx.indexIn(line) != -1)
-                rc_[rx.cap(1)] = rx.cap(2);
+            {
+                auto str = rx.cap(2).simplified();
+                rc_[rx.cap(1)] = str;
+            }
         }
 
         file.close();

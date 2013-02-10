@@ -31,6 +31,9 @@ public:
         connect(&launcher_, SIGNAL(started()), SLOT(onStarted()));
         connect(&control_, SIGNAL(connected()), SLOT(onConnected()));
         connect(&control_, SIGNAL(newIdentity()), SLOT(onNewIdentity()));
+        connect(&locationFinder_,
+                SIGNAL(locationFound(QString,QString,QString,QPixmap)),
+                SLOT(onLocationFound(QString,QString,QString,QPixmap)));
 
         control_.connectToTor();
     }
@@ -59,12 +62,13 @@ public:
     QString country()   { return country_; }
     QString location()  { return location_;  }
     QPixmap map()       { return map_; }
+    QString port()      { return settings_->attr("SocksPort", "localhost:9050"); }
 
 private slots:
     void onStarted();
     void onConnected();
     void onNewIdentity();
-    void onLocationFound(QString&, QString&, QString&, QPixmap&);
+    void onLocationFound(const QString&, const QString&, const QString&, const QPixmap&);
 };
 
 #include "torinstance.moc"
@@ -84,7 +88,7 @@ void TorInstanceImpl::onNewIdentity()
     checkIdentity();
 }
 
-void TorInstanceImpl::onLocationFound(QString &ip, QString &country, QString &geo, QPixmap &map)
+void TorInstanceImpl::onLocationFound(const QString& ip, const QString& country, const QString& geo, const QPixmap& map)
 {
     ip_ = ip;
     country_ = country;
@@ -113,3 +117,4 @@ QString TorInstance::ip()       { return impl_->ip(); }
 QString TorInstance::country()  { return impl_->country(); }
 QString TorInstance::location() { return impl_->location(); }
 QPixmap TorInstance::map()      { return impl_->map(); }
+QString TorInstance::port()     { return impl_->port(); }
