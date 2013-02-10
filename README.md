@@ -40,7 +40,8 @@ High severity
 
 Medium severity
 * Occasionaly the visualization of location and current ext. IP address i not up-to-date
-* Adding two torrc with the same filename may lead to unpredictable behavior
+* Adding two or more torrc with the same filename may lead to unpredictable behavior
+* Adding two or more torrc with the same control port may lead to unpredictable behavior
 
 Low severity
 * The installer contains its own tor executable, so it may be not the recent version
