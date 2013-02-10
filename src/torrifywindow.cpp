@@ -1,7 +1,7 @@
 #include "torrifywindow.h"
 #include "ui_torrifywindow.h"
-#include "src/helpdialog.h"
-#include "src/torinstancemanager.h"
+#include "helpdialog.h"
+#include "torinstancemanager.h"
 
 #include <QFileDialog>
 #include <QFileInfo>

@@ -12,17 +12,18 @@ TARGET = torrify
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        torrifywindow.cpp \
+SOURCES +=\
     src/torinstancelistmodel.cpp \
     src/torinstancemanager.cpp \
     src/torcontrol.cpp \
     src/torinstance.cpp \
     src/torsettings.cpp \
     src/torlocationfinder.cpp \
-    src/helpdialog.cpp
+    src/helpdialog.cpp \
+    src/main.cpp \
+    src/torrifywindow.cpp
 
-HEADERS  += torrifywindow.h \
+HEADERS  += \
     src/torinstancelistmodel.h \
     src/torinstancemanager.h \
     src/torcontrol.h \
@@ -31,11 +32,13 @@ HEADERS  += torrifywindow.h \
     src/torinstance.h \
     src/torsettings.h \
     src/torlocationfinder.h \
-    version.h \
-    src/helpdialog.h
+    src/helpdialog.h \
+    src/torrifywindow.h \
+    src/version.h
 
-FORMS    += torrifywindow.ui \
-    src/helpdialog.ui
+FORMS    += \
+    src/helpdialog.ui \
+    src/torrifywindow.ui
 
 RESOURCES += \
     torrify.qrc
