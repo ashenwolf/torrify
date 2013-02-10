@@ -35,15 +35,15 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Skoll\software\torrify-installer\torrify.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Skoll\software\torrify-installer\*"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\Skoll\software\torrify-tor-extra\*"; DestDir: "{userappdata}\Tor"; Flags: onlyifdoesntexist uninsneveruninstall
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: "D:\Skoll\software\torrify-tor-redist\vcredist_sp1_x86.exe"; DestDir: {tmp}; Flags: deleteafterinstall
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
+Filename: "{tmp}\vcredist_sp1_x86.exe"; Parameters: "/q";
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
