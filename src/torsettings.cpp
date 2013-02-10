@@ -52,7 +52,7 @@ public:
     QString attr(const QString& name, const QString& def)
     {
         if (rc_.find(name.toLower()) != rc_.end())
-            return rc_[name];
+            return rc_[name.toLower()];
         return def;
     }
 
