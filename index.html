@@ -67,8 +67,8 @@ switch between those more comfortable and less time consuming.</p>
 # torrc-us: special torrent file for US exit nodes
 #
 SocksPort 9050 # Default: Bind to localhost:9050 for local connections.
-DataDirectory C:\Users\username\Application Data\Tor\us # should be different
-                                                       # for different Tor instances
+DataDirectory C:\Users\&lt;username&gt;\Application Data\Tor\us # should be different
+                                                          # for different Tor instances
 ControlPort 9051
 ExitNodes {us}
 ExcludeNodes {a1},{??}
@@ -78,11 +78,11 @@ StrictNodes 1
 <h6>GB exit node:</h6>
 
 <pre><code># 
-# torrc-us: special torrent file for US exit nodes
+# torrc-gb: special torrent file for GB exit nodes
 #
 SocksPort 9052 # Default: Bind to localhost:9050 for local connections.
-DataDirectory C:\Users\username\Application Data\Tor\gb # should be different
-                                                       # for different Tor instances
+DataDirectory C:\Users\&lt;username&gt;\Application Data\Tor\gb # should be different
+                                                          # for different Tor instances
 ControlPort 9053
 ExitNodes {gb}
 ExcludeNodes {a1},{??}
