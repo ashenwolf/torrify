@@ -70,6 +70,10 @@ Low severity
 * The installer contains its own tor executable, so it may be not the recent version
 * No confirmation on deleting the torrc file from list (watch out)
 
+Acknowledgements
+----------------
+
+* @minus-one - testing and improvements suggestion
 
 For contributors
 --------------------
