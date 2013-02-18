@@ -73,7 +73,7 @@ Low severity
 Acknowledgements
 ----------------
 
-* @minus-one - testing and improvements suggestion
+* [minus-one](http://kilesa.tk/) (@robounohito at github) - testing and improvements suggestion
 
 For contributors
 --------------------
