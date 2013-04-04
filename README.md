@@ -5,8 +5,6 @@ A very simple tool to run multiple Tor instances (with separate configs).
 
 The installer can be found here: http://graywolf.org.ua/download/torrify_setup.exe
 
-_Note: the links to archives above will download only the source code._
-
 The initial idea was to implement a tool that would allow me to use services
 that are unavailable to my country via some proxy IP. The best choice of the tool
 happened to be Tor and it was pretty good until I felt the need to have two
@@ -28,7 +26,7 @@ Install the application. Add several torrc files like the one below. Have fun.
     # torrc-us: special torrent file for US exit nodes
     #
     SocksPort 9050 # Default: Bind to localhost:9050 for local connections.
-    DataDirectory C:\Users\<username>\Application Data\Tor\us # should be different
+    DataDirectory C:\Users\<username>\AppData\Roaming\Tor\us # should be different
                                                               # for different Tor instances
     ControlPort 9051
     ExitNodes {us}
@@ -41,7 +39,7 @@ Install the application. Add several torrc files like the one below. Have fun.
     # torrc-gb: special torrent file for GB exit nodes
     #
     SocksPort 9052 # Default: Bind to localhost:9050 for local connections.
-    DataDirectory C:\Users\<username>\Application Data\Tor\gb # should be different
+    DataDirectory C:\Users\<username>\AppData\Roaming\Tor\gb # should be different
                                                               # for different Tor instances
     ControlPort 9053
     ExitNodes {gb}
